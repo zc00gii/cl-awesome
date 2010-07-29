@@ -38,3 +38,9 @@
 (defun move-window (where)
   (run-raw-lua (format nil "awful.client.swap.byidx(~a)" where)))
 
+(defun toggle-maximize-window ()
+  (run-raw-lua "client.focus.maximized_vertical = not client.focus.maximized_vertical")
+  (run-raw-lua "client.focus.maximized_horizontal = not client.focus.maximized_horizontal"))
+
+(defun toggle-fullscreen-window ()
+  (run-raw-lua "client.focus.fullscreen = not client.focus.fullscreen"))
