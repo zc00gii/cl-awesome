@@ -27,4 +27,12 @@
 
 (defun move-window (where)
   (run-raw-lua (format "awful.client.swap.byidx(%s)" where)))
+
+;; Awesome little metaprogramming hack to bind C-x 4 i where i is the awesome workspace number
+(loop for i in '(1 2 3 4 5 6 7 8) do (global-set-key (eval `(kbd ,(format "C-x 4 %s" i)))
+						     `(lambda ()
+						       (interactive)
+							 (make-frame)
+							 (move-to-workspace ,i))))
+
 (provide 'awesome)
