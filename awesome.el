@@ -1,34 +1,32 @@
 (defun run-raw-lua (lua)
   (slime-eval `(cl-awesome::run-raw-lua ,lua)))
 
-(defun toggle-awesome-menu ()
- (run-raw-lua "mymainmenu:toggle()"))
+(defmacro define-awesome-function (function args)
+  (if (null args)
+      `(defun ,function ()
+	 ,(multiple-value-bind (name) (read-from-string
+				       (format "(slime-eval '(cl-awesome::%s))" function)) name))
+    `(defun ,function ,args
+       ,(multiple-value-bind (name) (read-from-string
+				     (format "(slime-eval `(cl-awesome::%s %s))" function
+					     (let ((return-string ""))
+					       (loop for i in args do
+						     (setq return-string
+							   (format "%s ,%s" return-string i)))
+					       return-string))) name))))
 
-(defun restart-awesome ()
-  (run-raw-lua "awesome:restart()"))
+(define-awesome-function toggle-awesome-menu ())
+(define-awesome-function restart-awesome ())
+(define-awesome-function quit-awesome ())
+(define-awesome-function go-to-workspace (number))
+(define-awesome-function move-to-workspace (number))
+(define-awesome-function toggle-workspace (number))
+(define-awesome-function switch-window (which-way))
+(define-awesome-function move-mouse-and-focus (where))
+(define-awesome-function move-window (where))
+(define-awesome-function maximize-window ())
+(define-awesome-function toggle-fullscreen-window ())
 
-(defun quit-awesome ()
-  (run-raw-lua "awesome:quit()"))
-
-(defun go-to-workspace (number)
-  (run-raw-lua (format "awful.tag.viewonly(tags[mouse.screen][%s])" number)))
-
-(defun move-to-workspace (number)
-  (run-raw-lua (format "awful.client.movetotag(tags[client.focus.screen][%s])" number)))
-
-(defun toggle-workspace (number)
-  (run-raw-lua (format "awful.tag.viewtoggle(tags[mouse.screen][%s])" number)))
-
-(defun switch-window (which-way)
-  (run-raw-lua (format "awful.client.focus.byidx(%s)" which-way)))
-
-(defun move-mouse-and-focus (where)
-  (run-raw-lua (format "awful.screen.focus_relative(%s)" where)))
-
-(defun move-window (where)
-  (run-raw-lua (format "awful.client.swap.byidx(%s)" where)))
-
-;; Awesome little metaprogramming hack to bind C-x 4 i where i is the awesome workspace number
 (loop for i in '(1 2 3 4 5 6 7 8) do (global-set-key (eval `(kbd ,(format "C-x 4 %s" i)))
 						     `(lambda ()
 						       (interactive)
