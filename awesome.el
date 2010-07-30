@@ -24,7 +24,7 @@
 (define-awesome-function switch-window (which-way))
 (define-awesome-function move-mouse-and-focus (where))
 (define-awesome-function move-window (where))
-(define-awesome-function maximize-window ())
+(define-awesome-function toggle-maximize-window ())
 (define-awesome-function toggle-fullscreen-window ())
 
 (loop for i in '(1 2 3 4 5 6 7 8) do (global-set-key (eval `(kbd ,(format "C-x 4 %s" i)))
