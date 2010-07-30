@@ -1,6 +1,3 @@
-(defun run-raw-lua (lua)
-  (slime-eval `(cl-awesome::run-raw-lua ,lua)))
-
 (defmacro define-awesome-function (function args)
   (if (null args)
       `(defun ,function ()
@@ -14,7 +11,7 @@
 						     (setq return-string
 							   (format "%s ,%s" return-string i)))
 					       return-string))) name))))
-
+(define-awesome-function run-raw-lua (lua))
 (define-awesome-function toggle-awesome-menu ())
 (define-awesome-function restart-awesome ())
 (define-awesome-function quit-awesome ())
